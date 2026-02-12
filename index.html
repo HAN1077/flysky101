@@ -14,8 +14,8 @@ h2 { text-align:center; margin-bottom:40px; color:#ff2d2d; font-size:32px; }
 
 /* ===== HEADER ===== */
 header { background:black; padding:15px 8%; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; border-bottom:2px solid #ff2d2d; }
-header h1 { color:#ff2d2d; }
-.cart-btn { background:#ff2d2d; padding:8px 15px; border-radius:20px; }
+header h1 { color:#ff2d2d; cursor:pointer; }
+.cart-btn { background:#ff2d2d; padding:8px 15px; border-radius:20px; cursor:pointer; }
 
 /* ===== HERO ===== */
 .hero { height:85vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da'); background-size:cover; background-position:center; }
@@ -33,7 +33,7 @@ section { padding:80px 8%; }
 .card img { width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px; }
 
 /* ===== BUTTONS ===== */
-button { padding:8px 15px; margin-top:10px; border:none; border-radius:20px; background:#ff2d2d; color:white; cursor:pointer; font-weight:600; }
+button { padding:8px 15px; margin-top:10px; border:none; border-radius:20px; background:#ff2d2d; color:white; cursor:pointer; font-weight:600; transition:0.2s; }
 button:hover { background:white; color:#ff2d2d; }
 
 /* ===== CART ===== */
@@ -59,22 +59,58 @@ iframe { width:100%; height:300px; border-radius:15px; }
 .material-row a { font-size:12px; color:cyan; text-decoration:none; }
 .close-modal { background:#444; width:100%; margin-top:10px; }
 @keyframes pop{ from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
+
+/* ===== FEATURE ADD-ON ===== */
+.slideshow-box{
+    margin-top:25px;
+    width:100%;
+    max-width:700px;
+    border-radius:15px;
+    overflow:hidden;
+}
+.slideshow-box img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+}
+
+.upload-design{
+    background:#1a1a1a;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+}
+.upload-design input{
+    background:#222;
+    color:white;
+}
+
+/* ===== SMOOTH QTY ANIMATION ===== */
+.qty-animate {
+    display:inline-block;
+    transition: transform 0.15s;
+}
+.qty-animate.up { transform: translateY(-10px); }
+.qty-animate.down { transform: translateY(10px); }
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Fly Sky Printing</h1>
-<div class="cart-btn">🛒 (<span id="cartCount">0</span>)</div>
+<h1 onclick="window.scrollTo({top:0,behavior:'smooth'})">Fly Sky Printing</h1>
+<div class="cart-btn" onclick="document.getElementById('cartSection').scrollIntoView({behavior:'smooth'})">🛒 (<span id="cartCount">0</span>)</div>
 </header>
 
 <div class="hero">
 <h2>Premium Printing & Corporate Gifts</h2>
 <p>Based in Bangi, Selangor • Since 2024</p>
+
+<div class="slideshow-box">
+<img id="autoSlide" src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab">
+</div>
 </div>
 
-<!-- ABOUT -->
 <section>
 <h2>About Company</h2>
 <div class="card">
@@ -87,7 +123,6 @@ We provide fast turnaround, premium materials and special bulk pricing for corpo
 </div>
 </section>
 
-<!-- PRODUCTS -->
 <section>
 <h2>Our Products</h2>
 <div class="products">
@@ -100,34 +135,16 @@ We provide fast turnaround, premium materials and special bulk pricing for corpo
 </div>
 </section>
 
-<!-- TESTIMONIAL -->
 <section>
-<h2>Testimonials</h2>
-<div class="card">
-<p>"Very fast service and high quality printing. Highly recommended!"</p>
-<p>— Ahmad, Bangi</p>
+<h2>Upload Your Design</h2>
+<div class="upload-design">
+<p>Upload artwork (PNG, JPG, PDF)</p>
+<input type="file" accept=".png,.jpg,.jpeg,.pdf">
+<button>Submit Design</button>
 </div>
 </section>
 
-<!-- FAQ -->
-<section>
-<h2>FAQ</h2>
-<div class="card">
-<p><b>Q: Do you accept bulk orders?</b></p>
-<p>Yes, we provide special discounts for orders above RM300 and RM500.</p>
-<p><b>Q: How long is production time?</b></p>
-<p>Usually 2-5 working days depending on quantity.</p>
-</div>
-</section>
-
-<!-- LOCATION -->
-<section>
-<h2>Our Location</h2>
-<iframe src="https://maps.google.com/maps?q=Bangi%20Selangor&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
-</section>
-
-<!-- CART -->
-<section>
+<section id="cartSection">
 <div class="cart">
 <h2>Checkout</h2>
 <div id="cartItems"></div>
@@ -145,7 +162,6 @@ We provide fast turnaround, premium materials and special bulk pricing for corpo
 
 <a href="https://wa.me/60142200493?text=Hi%20Fly%20Sky%20Printing,%20I%20want%20more%20info." class="whatsapp-float" target="_blank">💬 WhatsApp</a>
 
-<!-- MATERIAL POPUP -->
 <div class="modal" id="materialModal">
 <div class="modal-box">
 <h3>Select Material & Market Price</h3>
@@ -155,20 +171,40 @@ We provide fast turnaround, premium materials and special bulk pricing for corpo
 </div>
 
 <script>
+// ===== AUTO SLIDESHOW =====
+let slideList = [
+"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+"https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+"https://images.unsplash.com/photo-1581092918484-8313b1f1c4d6"
+];
+let slideIndex = 0;
+setInterval(()=>{
+    slideIndex++;
+    if(slideIndex >= slideList.length) slideIndex = 0;
+    document.getElementById("autoSlide").src = slideList[slideIndex];
+},3000);
+
 // ===== CART =====
 let cart = [];
 
 function addToCart(product,price){
     let exist = cart.find(i => i.product===product);
-    if(exist){ exist.qty++; }
-    else{ cart.push({product,price,qty:1}); }
+    if(exist){ exist.qty++; animateQty(exist.product,"up"); }
+    else{ cart.push({product,price,qty:1}); animateQty(product,"up"); }
     updateCart();
 }
 
-// ===== HOLD BUTTON FOR QUANTITY =====
-function holdChangeQty(btn,product,val){
-    let interval = setInterval(()=>changeQty(product,val),150);
-    btn.onmouseup = btn.onmouseleave = ()=>clearInterval(interval);
+// ===== SMOOTH QTY ANIMATION =====
+function animateQty(product,direction){
+    let cartDiv = document.getElementById("cartItems");
+    let buttons = cartDiv.querySelectorAll("button");
+    cartDiv.querySelectorAll("p").forEach(p=>{
+        if(p.textContent.includes(product)){
+            p.classList.add('qty-animate');
+            p.classList.add(direction);
+            setTimeout(()=>{ p.classList.remove('qty-animate'); p.classList.remove(direction); },150);
+        }
+    });
 }
 
 function changeQty(product,val){
@@ -176,6 +212,12 @@ function changeQty(product,val){
     if(!item) return;
     item.qty += val;
     if(item.qty <=0) cart = cart.filter(i=>i.product!==product);
+    animateQty(product, val>0?"up":"down");
+    updateCart();
+}
+
+function removeItem(product){
+    cart = cart.filter(i=>i.product!==product);
     updateCart();
 }
 
@@ -185,8 +227,9 @@ function updateCart(){
         let sub = item.qty * item.price;
         total+=sub;
         html+=`<p>${item.product} (RM${item.price})</p>
-<button onmousedown="holdChangeQty(this,'${item.product}',1)">+</button>
-<button onmousedown="holdChangeQty(this,'${item.product}',-1)">-</button>
+<button onmousedown="startHold(this,'${item.product}',1)" onmouseup="stopHold()" onmouseleave="stopHold()">+</button>
+<button onmousedown="startHold(this,'${item.product}',-1)" onmouseup="stopHold()" onmouseleave="stopHold()">-</button>
+<button onclick="removeItem('${item.product}')" style="background:#444;">Delete</button>
 Qty: ${item.qty} | RM${sub}<hr>`;
     });
 
@@ -202,6 +245,14 @@ Qty: ${item.qty} | RM${sub}<hr>`;
     document.getElementById("cartCount").innerText=cart.reduce((a,b)=>a+b.qty,0);
 }
 
+// ===== HOLD BUTTON =====
+let holdInterval;
+function startHold(btn,product,val){
+    changeQty(product,val);
+    holdInterval = setInterval(()=>changeQty(product,val),150);
+}
+function stopHold(){ clearInterval(holdInterval); }
+
 function checkout(){
     if(cart.length===0){ alert("Cart kosong!"); return; }
     let name=document.getElementById("name").value;
@@ -212,7 +263,7 @@ function checkout(){
     window.open(`https://wa.me/60142200493?text=${message}`);
 }
 
-// ===== POPUP MATERIAL =====
+// ===== MARKET DATA =====
 const market = {
     tshirt:[{n:"Cotton 100%",p:26,l:"https://www.google.com/search?q=cotton+tshirt+printing"},
             {n:"Microfiber Sport",p:30,l:"https://www.google.com/search?q=microfiber+tshirt+printing"},
