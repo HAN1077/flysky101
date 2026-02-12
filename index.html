@@ -67,16 +67,11 @@ iframe { width:100%; height:300px; border-radius:15px; }
     max-width:700px;
     border-radius:15px;
     overflow:hidden;
-    text-align:center;
 }
 .slideshow-box img{
     width:100%;
-    height:auto;
-    max-height:400px; /* adjust max height */
-    object-fit:contain; /* supaya gambar tak crop */
-    transition: opacity 0.5s ease-in-out;
-    display:block;
-    margin:0 auto;
+    height:250px;
+    object-fit:cover;
 }
 
 .upload-design{
@@ -112,7 +107,8 @@ iframe { width:100%; height:300px; border-radius:15px; }
 <p>Based in Bangi, Selangor • Since 2024</p>
 
 <div class="slideshow-box">
-    <img id="autoSlide" src="https://images.unsplash.com/photo-1602524810402-f7ed8d62a728?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Printing Slideshow">
+<img id="autoSlide" src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab">
+</div>
 </div>
 
 <section>
@@ -177,24 +173,15 @@ We provide fast turnaround, premium materials and special bulk pricing for corpo
 <script>
 // ===== AUTO SLIDESHOW =====
 let slideList = [
-"https://images.unsplash.com/photo-1602524810402-f7ed8d62a728?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-"https://images.unsplash.com/photo-1611599539363-fbce82a159d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-"https://images.unsplash.com/photo-1612831455546-b437f305dfd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+"https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+"https://images.unsplash.com/photo-1581092918484-8313b1f1c4d6"
 ];
-
 let slideIndex = 0;
-const slideImg = document.getElementById("autoSlide");
-
 setInterval(()=>{
     slideIndex++;
     if(slideIndex >= slideList.length) slideIndex = 0;
-    
-    // fade effect
-    slideImg.style.opacity = 0;
-    setTimeout(()=>{
-        slideImg.src = slideList[slideIndex];
-        slideImg.style.opacity = 1;
-    },300); // 300ms fade
+    document.getElementById("autoSlide").src = slideList[slideIndex];
 },3000);
 
 // ===== CART =====
@@ -320,6 +307,4 @@ window.addEventListener("scroll",()=>{
 </script>
 
 </body>
-
 </html>
-
